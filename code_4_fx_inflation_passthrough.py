@@ -15,13 +15,12 @@ DOWNLOADS = os.path.join(os.path.expanduser("~"), "Downloads")
 OUTPUT_DIR = os.path.join(DOWNLOADS, "4_FX_Inflation_Analysis")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-print(f"📂 All files will be saved to:\n   {OUTPUT_DIR}\n")
+print(f" All files will be saved to:\n   {OUTPUT_DIR}\n")
 
 print("=" * 70)
 print("EXCHANGE RATE PASS-THROUGH TO INDIAN INFLATION")
 print("=" * 70)
 
-# ─── Step 1: Fetch Data ──────────────────────────────────────────────────────
 print("\nStep 1: Fetching data from World Bank API...")
 
 TIME_RANGE = range(1990, 2024)
@@ -67,7 +66,6 @@ print(f"  Year range: {india_df.index.min()} - {india_df.index.max()}")
 # Drop rows with too many NaNs
 india_df = india_df.dropna(subset=["FX_Rate_LCU_per_USD", "CPI_Inflation_pct"])
 
-# ─── Step 2: Visualize Raw Data ──────────────────────────────────────────────
 print("\nStep 2: Generating visualizations...")
 
 fig, axes = plt.subplots(3, 1, figsize=(14, 12), sharex=True)
@@ -110,7 +108,6 @@ plt.savefig(os.path.join(OUTPUT_DIR, "india_fx_inflation_overview.png"),
 plt.close()
 print("  ✓ Overview plot saved")
 
-# ─── Step 3: Stationarity Tests (ADF) ────────────────────────────────────────
 print("\nStep 3: Augmented Dickey-Fuller tests for stationarity...")
 
 def adf_test_manual(series, name):
@@ -152,7 +149,6 @@ for name, series in vars_to_test.items():
     if series is not None:
         stationarity[name] = adf_test_manual(series, name)
 
-# ─── Step 4: Correlation and Lagged Analysis ─────────────────────────────────
 print("\n" + "=" * 70)
 print("Step 4: Cross-correlation analysis (FX → Inflation lags)")
 print("=" * 70)
@@ -189,7 +185,6 @@ if "FX_Change_pct" in india_df.columns:
                                           india_df["WPI_Inflation_pct"], max_lags=5)
         print(lag_corr_wpi.to_string(index=False))
 
-# ─── Step 5: Simple Granger Causality Test (Manual) ──────────────────────────
 print("\n" + "=" * 70)
 print("Step 5: Granger Causality Tests (Manual Implementation)")
 print("=" * 70)
@@ -278,7 +273,6 @@ if "FX_Change_pct" in india_df.columns:
     if gc_cpi_fx is not None:
         print(gc_cpi_fx.to_string(index=False))
 
-# ─── Step 6: VAR Model Estimation ────────────────────────────────────────────
 print("\n" + "=" * 70)
 print("Step 6: VAR(p) Model Estimation")
 print("=" * 70)
@@ -387,7 +381,6 @@ if len(var_data) >= 15:
                 print(f"  {mat[i,j]:>15.4f}", end="")
             print()
 
-    # ─── Step 7: Network Interpretation ──────────────────────────────────
     print("\n" + "=" * 70)
     print("Step 7: Network Interpretation (Directed Graph)")
     print("=" * 70)
@@ -400,8 +393,6 @@ if len(var_data) >= 15:
                     direction = "reinforcing (+)" if mat[i, j] > 0 else "dampening (-)"
                     print(f"    {var_cols[j]} → {var_cols[i]} "
                           f"(lag {lag}, coeff = {mat[i,j]:.4f}, {direction})")
-
-    # ─── Step 8: FEVD (Variance Decomposition) ──────────────────────────
     print("\n" + "=" * 70)
     print("Step 8: Forecast Error Variance Decomposition (FEVD)")
     print("=" * 70)
@@ -469,8 +460,6 @@ if len(var_data) >= 15:
 
     print(f"\n  ★ KEY RESULT: {pct_explained:.1f}% of CPI inflation forecast error")
     print(f"    variance is attributable to FX rate shocks (at 10-step horizon)")
-
-    # ─── Step 9: Spillover Analysis ──────────────────────────────────────
     print("\n" + "=" * 70)
     print("Step 9: Diebold-Yilmaz Spillover Indices")
     print("=" * 70)
@@ -493,7 +482,6 @@ if len(var_data) >= 15:
 else:
     print("  ⚠ Insufficient data for VAR estimation")
 
-# ─── Step 10: Lagged Scatter Plots ───────────────────────────────────────────
 print("\n" + "=" * 70)
 print("Step 10: Generating lag-specific scatter plots")
 print("=" * 70)
@@ -534,11 +522,10 @@ if "FX_Change_pct" in india_df.columns:
     plt.close()
     print("  ✓ Lagged scatter plots saved")
 
-# ─── Save results ────────────────────────────────────────────────────────────
 india_df.to_csv(os.path.join(OUTPUT_DIR, "india_fx_inflation_data.csv"))
 
 print(f"\n✓ All outputs saved!")
-print(f"\n📂 FILES IN YOUR DOWNLOADS: 4_FX_Inflation_Analysis/")
+print(f"\n FILES IN YOUR DOWNLOADS: 4_FX_Inflation_Analysis/")
 print("-" * 60)
 for f in sorted(os.listdir(OUTPUT_DIR)):
     full_path = os.path.join(OUTPUT_DIR, f)
