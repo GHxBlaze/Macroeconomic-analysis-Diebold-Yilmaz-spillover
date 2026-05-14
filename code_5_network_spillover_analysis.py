@@ -15,7 +15,7 @@ DOWNLOADS = os.path.join(os.path.expanduser("~"), "Downloads")
 OUTPUT_DIR = os.path.join(DOWNLOADS, "5_Network_Spillover")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-print(f"📂 All files will be saved to:\n   {OUTPUT_DIR}\n")
+print(f" All files will be saved to:\n   {OUTPUT_DIR}\n")
 
 np.random.seed(42)
 
@@ -24,9 +24,6 @@ print("DIRECTED NETWORK FROM TIME SERIES")
 print("VAR, Granger Causality, & Diebold-Yilmaz Spillover Analysis")
 print("=" * 70)
 
-# ═══════════════════════════════════════════════════════════════════════════
-# SECTION 1: DATA GENERATION (Simulated Macro-Financial System)
-# ═══════════════════════════════════════════════════════════════════════════
 
 print("\n1. GENERATING SIMULATED MACRO-FINANCIAL DATA")
 print("-" * 50)
@@ -84,11 +81,6 @@ print(f"  Observations: {T}")
 print(f"  True lag order: {p_true}")
 print(f"\n  Summary statistics:")
 print(df.describe().round(3).to_string())
-
-
-# ═══════════════════════════════════════════════════════════════════════════
-# SECTION 2: VAR ESTIMATION WITH LAG SELECTION
-# ═══════════════════════════════════════════════════════════════════════════
 
 print("\n\n2. VAR ESTIMATION")
 print("-" * 50)
@@ -180,11 +172,6 @@ for lag, A in var_result["coef_matrices"].items():
             val = A[i, j]
             print(f"{val:>13.4f}", end="")
         print()
-
-
-# ═══════════════════════════════════════════════════════════════════════════
-# SECTION 3: GRANGER CAUSALITY TESTS (Pairwise)
-# ═══════════════════════════════════════════════════════════════════════════
 
 print("\n\n3. PAIRWISE GRANGER CAUSALITY TESTS")
 print("-" * 50)
@@ -392,11 +379,6 @@ for i in range(n_vars):
         role = "NET RECEIVER    ◀"
     print(f"    {VAR_NAMES[i]:>14}: Net = {net:>+7.1f}%  →  {role}")
 
-
-# ═══════════════════════════════════════════════════════════════════════════
-# SECTION 6: NETWORK VISUALIZATION
-# ═══════════════════════════════════════════════════════════════════════════
-
 print("\n\n6. NETWORK VISUALIZATION")
 print("-" * 50)
 
@@ -485,11 +467,6 @@ def draw_network(edge_matrix, var_names, fevd, directional_to, directional_from,
     print(f"  ✓ Network visualization saved: {filename}")
 
 draw_network(edge_matrix, VAR_NAMES, fevd, directional_to, directional_from)
-
-
-# ═══════════════════════════════════════════════════════════════════════════
-# SECTION 7: ROLLING WINDOW SPILLOVER ANALYSIS
-# ═══════════════════════════════════════════════════════════════════════════
 
 print("\n\n7. ROLLING WINDOW SPILLOVER ANALYSIS")
 print("-" * 50)
