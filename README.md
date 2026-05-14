@@ -1,4 +1,4 @@
-# Macroeconomic Analysis & Diebold-Yilmaz Spillover Project
+# Macroeconomic Analysis & Diebold Yilmaz Spillover Project
 
 A collection of Python scripts for macroeconomic data analysis, covering everything from data extraction to advanced network spillover modeling using the Diebold-Yilmaz framework.
 
