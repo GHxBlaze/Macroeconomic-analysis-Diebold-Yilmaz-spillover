@@ -14,9 +14,9 @@ DOWNLOADS = os.path.join(os.path.expanduser("~"), "Downloads")
 OUTPUT_DIR = os.path.join(DOWNLOADS, "2_Phillips_Curve")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-print(f"📂 All files will be saved to:\n   {OUTPUT_DIR}\n")
+print(f" All files will be saved to:\n   {OUTPUT_DIR}\n")
 
-# ─── Model Definitions ───────────────────────────────────────────────────────
+# Model Definitions 
 
 def linear_model(x, a, b):
     """Standard linear Phillips Curve: inflation = a + b * unemployment"""
@@ -33,16 +33,11 @@ def compute_r_squared(y_actual, y_predicted):
     if ss_tot == 0:
         return np.nan
     return 1 - (ss_res / ss_tot)
-
-
-# ─── Step 1: Get Top 50 GDP Countries ────────────────────────────────────────
 print("=" * 70)
 print("PHILLIPS CURVE ANALYSIS")
 print("=" * 70)
-
 print("\nStep 1: Identifying top 50 GDP countries...")
 
-# Fetch GDP data to rank countries
 gdp_data = wb.data.DataFrame("NY.GDP.MKTP.CD", time=2022, labels=True)
 gdp_data = gdp_data.reset_index()
 
@@ -61,25 +56,17 @@ gdp_data = gdp_data.sort_values(gdp_col, ascending=False)
 top_50_codes = gdp_data["economy"].head(50).tolist()
 
 print(f"  Top 50 economies identified: {top_50_codes[:10]}... (showing first 10)")
-
-# ─── Step 2: Fetch Inflation & Unemployment ──────────────────────────────────
 print("\nStep 2: Fetching inflation and unemployment data...")
 
 TIME_RANGE = range(2000, 2024)
-
-# Inflation (CPI, annual %)
 inflation_df = wb.data.DataFrame("FP.CPI.TOTL.ZG", economy=top_50_codes,
                                   time=TIME_RANGE, labels=True)
 inflation_df = inflation_df.reset_index()
-
-# Unemployment (% of total labor force)
 unemp_df = wb.data.DataFrame("SL.UEM.TOTL.ZS", economy=top_50_codes,
                               time=TIME_RANGE, labels=True)
 unemp_df = unemp_df.reset_index()
 
 print("  ✓ Data fetched")
-
-# ─── Step 3: Reshape data ────────────────────────────────────────────────────
 def reshape_wb_data(df, value_name):
     """Convert wide WB format to long format"""
     year_cols = [c for c in df.columns if c.startswith("YR")]
@@ -98,14 +85,10 @@ unemp_long = reshape_wb_data(unemp_df, "Unemployment")
 merged = inf_long.merge(unemp_long[["economy", "Year", "Unemployment"]],
                          on=["economy", "Year"], how="inner")
 merged = merged.dropna(subset=["Inflation", "Unemployment"])
-
-# Remove extreme outliers (hyperinflation etc.)
 merged = merged[(merged["Inflation"] > -10) & (merged["Inflation"] < 50)]
 merged = merged[merged["Unemployment"] > 0.1]  # Avoid division by zero for 1/x
 
 print(f"  ✓ Merged dataset: {len(merged)} observations, {merged['economy'].nunique()} countries")
-
-# ─── Step 4: Turkey-specific analysis ────────────────────────────────────────
 print("\n" + "=" * 70)
 print("TURKEY ANALYSIS (Detailed)")
 print("=" * 70)
@@ -172,8 +155,6 @@ if len(turkey) >= 5:
 else:
     print("  ⚠ Not enough Turkey data")
 
-
-# ─── Step 5: Loop over all Top 50 countries ──────────────────────────────────
 print("\n" + "=" * 70)
 print("TOP 50 GDP COUNTRIES - PHILLIPS CURVE FITS")
 print("=" * 70)
@@ -241,7 +222,7 @@ for _, row in results_df.iterrows():
 # Save results
 results_df.to_csv(os.path.join(OUTPUT_DIR, "phillips_curve_results_top50.csv"), index=False)
 
-# ─── Step 6: Summary Statistics ──────────────────────────────────────────────
+# Summary Statistics
 print("\n" + "=" * 70)
 print("SUMMARY")
 print("=" * 70)
@@ -258,7 +239,6 @@ print(f"  Average R² (Hyperbolic): {valid['R2_Hyperbolic'].mean():.4f}")
 print(f"\n  Negative slopes (expected for Phillips Curve):")
 print(f"    Linear: {(valid['Slope_Linear'] < 0).sum()} / {len(valid)} countries")
 
-# ─── Step 7: Comparative visualization ───────────────────────────────────────
 fig, axes = plt.subplots(1, 2, figsize=(14, 6))
 
 # R² comparison bar chart (top 15)
@@ -291,7 +271,7 @@ plt.savefig(os.path.join(OUTPUT_DIR, "phillips_curve_comparison_top50.png"), dpi
 plt.close()
 
 print(f"\n✓ All outputs saved!")
-print(f"\n📂 FILES IN YOUR DOWNLOADS: 2_Phillips_Curve/")
+print(f"\n FILES IN YOUR DOWNLOADS: 2_Phillips_Curve/")
 print("-" * 60)
 for f in sorted(os.listdir(OUTPUT_DIR)):
     full_path = os.path.join(OUTPUT_DIR, f)
