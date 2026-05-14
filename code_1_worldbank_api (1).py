@@ -2,16 +2,11 @@
 import wbgapi as wb
 import pandas as pd
 import os
-
-# ─── Output directory ────────────────────────────────────────────────────────
-# All CSV files will be saved to your Desktop inside Project_Output folder
 DESKTOP = os.path.join(os.path.expanduser("~"), "Downloads")
 OUTPUT_DIR = os.path.join(DESKTOP, "1_WorldBank_Data")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-print(f"📂 All files will be saved to:\n   {OUTPUT_DIR}\n")
-
-# ─── Define indicators ───────────────────────────────────────────────────────
+print(f":\n   {OUTPUT_DIR}\n")
 # These are the standard World Bank indicator codes
 INDICATORS = {
     "FP.CPI.TOTL.ZG": "Inflation_CPI_annual_pct",
@@ -32,7 +27,7 @@ print("=" * 70)
 print("WORLD BANK DATA EXTRACTION")
 print("=" * 70)
 
-# ─── Extract each indicator ──────────────────────────────────────────────────
+#Extract each indicator
 all_data = {}
 
 for code, name in INDICATORS.items():
@@ -66,7 +61,6 @@ for code, name in INDICATORS.items():
     except Exception as e:
         print(f"  ✗ Error: {e}")
 
-# ─── Save individual CSVs ────────────────────────────────────────────────────
 print("\n" + "=" * 70)
 print("SAVING DATA FILES")
 print("=" * 70)
@@ -75,8 +69,7 @@ for name, df in all_data.items():
     filepath = os.path.join(OUTPUT_DIR, f"{name}.csv")
     df.to_csv(filepath, index=False)
     print(f"  Saved: {filepath}")
-
-# ─── Create a merged panel dataset ───────────────────────────────────────────
+    
 print("\nMerging into unified panel dataset...")
 merged = None
 for name, df in all_data.items():
@@ -94,7 +87,6 @@ if merged is not None:
     print(f"  Countries: {merged['economy'].nunique()}")
     print(f"  Year range: {merged['Year'].min()} - {merged['Year'].max()}")
 
-# ─── Quick summary statistics ────────────────────────────────────────────────
 print("\n" + "=" * 70)
 print("SUMMARY STATISTICS (Latest available year per indicator)")
 print("=" * 70)
@@ -108,7 +100,7 @@ for name in INDICATORS.values():
         print(f"  Std: {latest.std():.2f}")
 
 print("\n✓ All data extraction complete!")
-print(f"\n📂 FILES SAVED TO: {OUTPUT_DIR}")
+print(f"\n FILES SAVED TO: {OUTPUT_DIR}")
 print("-" * 60)
 
 # List every file that was actually created
