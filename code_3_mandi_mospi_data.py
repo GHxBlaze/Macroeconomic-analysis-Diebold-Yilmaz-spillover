@@ -13,15 +13,11 @@ DOWNLOADS = os.path.join(os.path.expanduser("~"), "Downloads")
 OUTPUT_DIR = os.path.join(DOWNLOADS, "3_Mandi_Price_Data")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-print(f"📂 All files will be saved to:\n   {OUTPUT_DIR}\n")
+print(f" All files will be saved to:\n   {OUTPUT_DIR}\n")
 
 print("=" * 70)
 print("MANDI DAILY PRICE DATA - IMPORT & QUALITY ASSESSMENT")
 print("=" * 70)
-
-# ─── Method 1: data.gov.in API ───────────────────────────────────────────────
-# The data.gov.in API provides access to Mandi price data
-# You need an API key from https://data.gov.in/
 
 print("\n--- Method 1: data.gov.in API ---")
 print("Note: You need an API key from data.gov.in to use this method.")
@@ -65,10 +61,6 @@ if API_KEY != "YOUR_API_KEY_HERE":
 else:
     print("  Skipping API fetch (no API key provided)")
     mandi_df = None
-
-# ─── Method 2: Generate sample structure for demonstration ───────────────────
-# This creates a realistic sample dataset matching the Mandi data structure
-# so you can test the analysis pipeline before getting the actual API key
 
 print("\n--- Method 2: Sample Dataset Structure ---")
 print("Creating sample data matching Mandi format for pipeline testing...\n")
@@ -138,7 +130,6 @@ for date in dates:
 sample_df = pd.DataFrame(rows)
 print(f"  ✓ Sample dataset created: {sample_df.shape[0]} rows × {sample_df.shape[1]} columns")
 
-# ─── Data Quality Assessment ─────────────────────────────────────────────────
 print("\n" + "=" * 70)
 print("DATA QUALITY ASSESSMENT")
 print("=" * 70)
@@ -201,7 +192,6 @@ if commodity_col in df.columns:
     for item, count in df[commodity_col].value_counts().head(10).items():
         print(f"    {item}: {count}")
 
-# ─── Cleaning Pipeline ───────────────────────────────────────────────────────
 print("\n" + "=" * 70)
 print("DATA CLEANING")
 print("=" * 70)
@@ -231,8 +221,6 @@ if "Min_Price" in df_clean.columns and "Max_Price" in df_clean.columns:
     print(f"  Fixed {mask.sum()} min/max price swaps")
 
 print(f"\n  Clean dataset: {len(df_clean)} records")
-
-# ─── Analysis: Price Trends ──────────────────────────────────────────────────
 print("\n" + "=" * 70)
 print("PRICE TREND ANALYSIS")
 print("=" * 70)
@@ -278,8 +266,8 @@ df_clean.to_csv(os.path.join(OUTPUT_DIR, "mandi_prices_cleaned.csv"), index=Fals
 if 'monthly_prices' in dir():
     monthly_prices.to_csv(os.path.join(OUTPUT_DIR, "mandi_monthly_averages.csv"), index=False)
 
-print(f"\n✓ All outputs saved!")
-print(f"\n📂 FILES IN YOUR DOWNLOADS: 3_Mandi_Price_Data/")
+print(f"\n All outputs saved!")
+print(f"\n FILES IN YOUR DOWNLOADS: 3_Mandi_Price_Data/")
 print("-" * 60)
 for f in sorted(os.listdir(OUTPUT_DIR)):
     full_path = os.path.join(OUTPUT_DIR, f)
